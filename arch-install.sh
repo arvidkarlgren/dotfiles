@@ -14,7 +14,6 @@ setup() {
 }
 
 message() {
-    echo
     echo "${1}"
     echo
 }
@@ -44,7 +43,7 @@ format_partitions() {
 mount_filesystems() {
     message "Mounting filesystems..."
 
-    swapon "${device}"
+    swapon "${partition_swap}"
 }
 
 setup
