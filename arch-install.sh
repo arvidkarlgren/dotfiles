@@ -5,7 +5,12 @@ hostname='arch-install'
 
 setup() {
     partition_device
-    format_filesystems
+
+    partition_esp="$(ls ${device}* | grep 1)"
+    partition_swap="$(ls ${device}* | grep 2)"
+    partition_root="$(ls ${device}* | grep 3)"
+
+    format_partitions
 }
 
 message() {
@@ -15,7 +20,7 @@ message() {
 }
 
 partition_device() {
-    message('Partitioning device...')
+    message "Partitioning device..."
 
     parted --script "${device}" \
         mklabel gpt \
@@ -24,20 +29,22 @@ partition_device() {
         mkpart '"Linux filesystem"' btrfs 8693MiB 100%
 }
 
-format_filesystems() {
-    local partition_esp="$(ls ${device}* | grep 1)"
-    local partition_swap="$(ls ${device}* | grep 2)"
-    local partition_root="$(ls ${device}* | grep 3)"
+format_partitions() {
+    message "Formatting partitions..."
+
     
     mkfs.fat -F32 "${partition_esp}"
     echo
     mkswap "${partition_swap}"
     echo
     mkfs.btrfs "${partition_root}"
+    echo
+}
 
-    echo "ESP: ${partition_esp}"
-    echo "Swap: ${partition_swap}"
-    echo "Root: ${partition_root}"
+mount_filesystems() {
+    message "Mounting filesystems..."
+
+    swapon "${device}"
 }
 
 setup
