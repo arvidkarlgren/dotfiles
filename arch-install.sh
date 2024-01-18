@@ -32,15 +32,15 @@ format_partitions() {
     message "Formatting partitions..."
 
     echo "Formatting ${partition_esp} as FAT32" 
-    dd if=${partition_esp} of= bs=512 count=1024
+    dd if=/dev/zero of=${partition_esp} bs=512 count=1024
     mkfs.fat -F32 "${partition_esp}"
     echo
     echo "Formatting ${partition_swap} as Swap" 
-    dd if=${partition_swap} of= bs=512 count=1024
+    dd if=/dev/zero of=${partition_swap} bs=512 count=1024
     mkswap "${partition_swap}"
     echo
     echo "Formatting ${partition_root} as BTRFS" 
-    dd if=${partition_root} of= bs=512 count=1024
+    dd if=/dev/zero of=${partition_root} bs=512 count=1024
     mkfs.btrfs ${partition_root}
     echo
 }
