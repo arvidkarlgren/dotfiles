@@ -11,6 +11,8 @@ setup() {
     partition_root="$(ls ${device}* | grep 3)"
 
     format_partitions
+
+    mount_filesystems
 }
 
 message() {
