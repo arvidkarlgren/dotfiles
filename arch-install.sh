@@ -8,7 +8,15 @@ setup() {
     format_filesystems
 }
 
+message() {
+    echo
+    echo "${1}"
+    echo
+}
+
 partition_device() {
+    message("Partitioning device...")
+
     parted --script "${device}" \
         mklabel gpt \
         mkpart '"EFI system partition"' fat32 1MiB 501MiB \
