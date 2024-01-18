@@ -31,12 +31,14 @@ partition_device() {
 format_partitions() {
     message "Formatting partitions..."
 
-    
+    echo "Formatting ${partition_esp} as FAT32" 
     mkfs.fat -F32 "${partition_esp}"
     echo
+    echo "Formatting ${partition_swap} as SWAP" 
     mkswap "${partition_swap}"
     echo
-    mkfs.btrfs "${partition_root}"
+    echo "Formatting ${partition_root} as BTRFS" 
+    echo "mkfs.btrfs ${partition_root}"
     echo
 }
 
