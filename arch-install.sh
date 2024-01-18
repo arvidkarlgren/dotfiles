@@ -82,21 +82,25 @@ generate_fstab() {
     message "Generating fstab..."
 
     cat >> /mnt/etc/fstab <<EOF
-    # Root
-    UUID=$(blkid -s UUID -o value ${partition_root}) \t / \t btrfs \t rw,noatime,compress=zstd:1,ssd,discard=async,space_cache=v2,subvol=/@ \t 0 \t 0
-    
-    # Home
-    UUID=$(blkid -s UUID -o value ${partition_root}) \t /home \t btrfs \t rw,noatime,compress=zstd:1,ssd,discard=async,space_cache=v2,subvol=/@home \t 0 0
-    
-    # Snapshots
-    UUID=$(blkid -s UUID -o value ${partition_root}) \t /.snapshots \t btrfs \t rw,noatime,compress=zstd:1,ssd,discard=async,space_cache=v2,subvol=/@snapshots \t 0 0
-    
-    # ESP
-    UUID=$(blkid -s UUID -o value ${partition_esp}) \t /efi \t vfat \t rw,relatime,fmask=0022,dmask=0022,codepage=437,iocharset=ascii,shortname=mixed,utf8,errors=remount-ro \t 0 2
+# Root
+UUID=$(blkid -s UUID -o value ${partition_root}) \t / \t btrfs \t rw,noatime,compress=zstd:1,ssd,discard=async,space_cache=v2,subvol=/@ \t 0 \t 0
+   
+# Home
+UUID=$(blkid -s UUID -o value ${partition_root}) \t /home \t btrfs \t rw,noatime,compress=zstd:1,ssd,discard=async,space_cache=v2,subvol=/@home \t 0 0
 
-    # Swap
-    UUID=$(blkid -s UUID -o value ${partition_swap}) \t none \t swap \t defaults \t 0 0
+# Snapshots
+UUID=$(blkid -s UUID -o value ${partition_root}) \t /.snapshots \t btrfs \t rw,noatime,compress=zstd:1,ssd,discard=async,space_cache=v2,subvol=/@snapshots \t 0 0
+    
+# ESP
+UUID=$(blkid -s UUID -o value ${partition_esp}) \t /efi \t vfat \t rw,relatime,fmask=0022,dmask=0022,codepage=437,iocharset=ascii,shortname=mixed,utf8,errors=remount-ro \t 0 2
+
+# Swap
+UUID=$(blkid -s UUID -o value ${partition_swap}) \t none \t swap \t defaults \t 0 0
 EOF
 }
+
+# CHANGE PROXMOX VM TO EFI
+# ADD TIMEZONE, HOSTNAME, ETC
+# ADD GRUB INSTALLATION
 
 setup
