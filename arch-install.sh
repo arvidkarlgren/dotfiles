@@ -15,7 +15,7 @@ message() {
 }
 
 partition_device() {
-    message("Partitioning device...")
+    message('Partitioning device...')
 
     parted --script "${device}" \
         mklabel gpt \
