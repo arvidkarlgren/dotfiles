@@ -70,4 +70,10 @@ mount_filesystems() {
     swapon "${partition_swap}"
 }
 
+install_base_system() {
+    #pacstrap -K /mnt base linux linux-firmware base-devel btrfs-progs git neovim grub grub-btrfs efibootmgr dosfstools os-prober mtools networkmanager openssh sudo
+
+    echo "UUID=$(blkid -s UUID -o value ${partition_root}) \t / \t btrfs \t rw,noatime,compress=zstd:1,ssd,discard=async,space_cache=v2,subvol=/@ \t 0 \t 0"
+}
+
 setup
