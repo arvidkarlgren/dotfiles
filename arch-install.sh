@@ -21,6 +21,8 @@ message() {
 partition_device() {
     message "Partitioning device..."
 
+    dd if=/dev/zero of="${device}" bs=512 count=1024
+
     parted --script "${device}" \
         mklabel gpt \
         mkpart '"EFI system partition"' fat32 1MiB 501MiB \
