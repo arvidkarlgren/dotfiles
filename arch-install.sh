@@ -2,3 +2,5 @@
 
 hostname=arch-install
 device=/dev/sda
+
+test
