@@ -3,7 +3,10 @@
 device='/dev/sda'
 hostname='arch-install'
 
-
+setup() {
+    partition_device
+    format_filesystems
+}
 
 partition_device() {
     parted --script "${device}" \
@@ -21,3 +24,5 @@ format_filesystems() {
     echo "Swap: ${partition_swap}"
     echo "Root: ${partition_root}"
 }
+
+setup
