@@ -20,6 +20,11 @@ format_filesystems() {
     local partition_esp="$(ls ${device}* | grep 1)"
     local partition_swap="$(ls ${device}* | grep 2)"
     local partition_root="$(ls ${device}* | grep 3)"
+    
+    mkfs.fat -F32 "${partition_esp}"
+    mkswap "${partition_swap}"
+    mkfs.btrfs "${partition_root}"
+
     echo "ESP: ${partition_esp}"
     echo "Swap: ${partition_swap}"
     echo "Root: ${partition_root}"
