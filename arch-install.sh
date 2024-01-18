@@ -36,16 +36,33 @@ format_partitions() {
     echo "Formatting ${partition_esp} as FAT32" 
     mkfs.fat -F32 "${partition_esp}"
     echo
-    echo "Formatting ${partition_swap} as SWAP" 
+    echo "Formatting ${partition_swap} as Swap" 
     mkswap "${partition_swap}"
     echo
     echo "Formatting ${partition_root} as BTRFS" 
-    echo "mkfs.btrfs ${partition_root}"
+    mkfs.btrfs ${partition_root}
     echo
 }
 
 mount_filesystems() {
     message "Mounting filesystems..."
+
+    # Temporarily mount BTRFS root and create subvolumes
+    mount "${partition_root}" /mnt
+    btrfs subvolume create /mnt/@
+    btrfs subvolume create /mnt/@home
+    btrfs subvolume create /mnt/@snapshots
+    umount /mnt
+
+    # Mount filesystems
+    mount -o noatime,compress=zstd:1,ssd,discard=async,space_cache=v2,subvol=@ "${partition_root}" /mnt
+    
+    mkdir /mnt/{home,.snapshots,efi}
+    
+    mount -o noatime,compress=zstd:1,ssd,discard=async,space_cache=v2,subvol=@home "${partition_root}" /mnt/home
+    mount -o noatime,compress=zstd:1,ssd,discard=async,space_cache=v2,subvol=@snapshots "${partition_root}" /mnt/.snapshots
+
+    mount "${partition_esp}" /mnt/efi
 
     swapon "${partition_swap}"
 }
