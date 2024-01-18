@@ -11,8 +11,9 @@ setup() {
     partition_root="$(ls ${device}* | grep 3)"
 
     format_partitions
-
     mount_filesystems
+    install_system
+    generate_fstab
 }
 
 message() {
@@ -70,10 +71,32 @@ mount_filesystems() {
     swapon "${partition_swap}"
 }
 
-install_base_system() {
-    #pacstrap -K /mnt base linux linux-firmware base-devel btrfs-progs git neovim grub grub-btrfs efibootmgr dosfstools os-prober mtools networkmanager openssh sudo
+install_system() {
+    message "Installing packages..."
 
-    echo "UUID=$(blkid -s UUID -o value ${partition_root}) \t / \t btrfs \t rw,noatime,compress=zstd:1,ssd,discard=async,space_cache=v2,subvol=/@ \t 0 \t 0"
+    pacstrap -K /mnt base linux linux-firmware base-devel btrfs-progs git neovim grub grub-btrfs efibootmgr dosfstools os-prober mtools networkmanager openssh sudo
+
+}
+
+generate_fstab() {
+    message "Generating fstab..."
+
+    cat >> /mnt/etc/fstab <<EOF
+    # Root
+    UUID=$(blkid -s UUID -o value ${partition_root}) \t / \t btrfs \t rw,noatime,compress=zstd:1,ssd,discard=async,space_cache=v2,subvol=/@ \t 0 \t 0
+    
+    # Home
+    UUID=$(blkid -s UUID -o value ${partition_root}) \t /home \t btrfs \t rw,noatime,compress=zstd:1,ssd,discard=async,space_cache=v2,subvol=/@home \t 0 0
+    
+    # Snapshots
+    UUID=$(blkid -s UUID -o value ${partition_root}) \t /.snapshots \t btrfs \t rw,noatime,compress=zstd:1,ssd,discard=async,space_cache=v2,subvol=/@snapshots \t 0 0
+    
+    # ESP
+    UUID=$(blkid -s UUID -o value ${partition_esp}) \t /efi \t vfat \t rw,relatime,fmask=0022,dmask=0022,codepage=437,iocharset=ascii,shortname=mixed,utf8,errors=remount-ro \t 0 2
+
+    # Swap
+    UUID=$(blkid -s UUID -o value ${partition_swap}) \t none \t swap \t defaults \t 0 0
+EOF
 }
 
 setup
