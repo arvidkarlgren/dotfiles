@@ -30,7 +30,9 @@ format_filesystems() {
     local partition_root="$(ls ${device}* | grep 3)"
     
     mkfs.fat -F32 "${partition_esp}"
+    echo
     mkswap "${partition_swap}"
+    echo
     mkfs.btrfs "${partition_root}"
 
     echo "ESP: ${partition_esp}"
