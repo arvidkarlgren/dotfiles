@@ -17,34 +17,36 @@ setup() {
     input_password
 
 	if check_variables; then
-        echo "Running installer..."
-	    partition_device
-	
-	    partition_esp="$(ls ${device}* | grep 1)"
-	    partition_swap="$(ls ${device}* | grep 2)"
-	    partition_root="$(ls ${device}* | grep 3)"
-	
-	    format_partitions
-	    mount_filesystems
-	    install_base
-	    generate_fstab
-	
-	    cp $0 /mnt/setup.sh
-	    arch-chroot /mnt /setup.sh chroot
-	fi
+#        echo "Running installer..."
+#	    partition_device
+#	
+#	    partition_esp="$(ls ${device}* | grep 1)"
+#	    partition_swap="$(ls ${device}* | grep 2)"
+#	    partition_root="$(ls ${device}* | grep 3)"
+#	
+#	    format_partitions
+#	    mount_filesystems
+#	    install_base
+#	    generate_fstab
+#	
+#	    cp $0 /mnt/setup.sh
+#	    arch-chroot /mnt /setup.sh chroot
+
+        ./setup.sh chroot
+    fi
 }
 
 configure() {
-    echo "Running configure..."
-    set_timezone
-    set_locale
-    set_keymap
-    configure_network
-    install_grub
-    generate_initramfs
+#    echo "Running configure..."
+#    set_timezone
+#    set_locale
+#    set_keymap
+#    configure_network
+#    install_grub
+#    generate_initramfs
     configure_users
     
-    rm /setup.sh
+#    rm /setup.sh
 }
 
 message() {
@@ -242,14 +244,15 @@ generate_initramfs() {
 }
 
 configure_users() {
-    # Set root password
-    echo -en "${password}\n${password}" | passwd
-
-    # Configure user
-    useradd -m "${user}"
-    echo -en "${password}\n${password}" | passwd arvid
-    usermod -aG wheel "${user}"
-    sed -i '/^# %wheel ALL=(ALL:ALL) ALL/c\%wheel ALL=(ALL:ALL) ALL' /etc/sudoers
+    echo "Password: ${password}"
+#    # Set root password
+#    echo -en "${password}\n${password}" | passwd
+#
+#    # Configure user
+#    useradd -m "${user}"
+#    echo -en "${password}\n${password}" | passwd arvid
+#    usermod -aG wheel "${user}"
+#    sed -i '/^# %wheel ALL=(ALL:ALL) ALL/c\%wheel ALL=(ALL:ALL) ALL' /etc/sudoers
 }
 
 
