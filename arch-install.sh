@@ -84,7 +84,7 @@ check_variables() {
         echo
         echo "Are these options correct? [y/N]"
         read response
-        if [ "$response" == "Y" ]; then
+        if [ "$response" == "y" ]; then
             return 0
         else
             return 1
