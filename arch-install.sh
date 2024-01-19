@@ -23,6 +23,7 @@ setup() {
     generate_fstab
     configure_system
     install_grub
+    generate_initramfs
 }
 
 message() {
@@ -164,7 +165,12 @@ install_grub() {
 }
 
 generate_initramfs() {
-    echo
+    message "Generating initramfs..."
+
+    sed -i '/^MODULES=(/c\MODULES=(btrfs)' /mnt/etc/mkinitcpio.conf
+    sed -i '/^HOOKS=(/c\HOOKS=(base udev autodetect modconf kms keyboard keymap consolefont block filesystems fsck grub-btrfs-overlayfs)' /mnt/etc/mkinitcpio.conf
+
+    arch-chroot /mnt mkinitcpio -p linux
 }
 
 # CHANGE PROXMOX VM TO EFI
