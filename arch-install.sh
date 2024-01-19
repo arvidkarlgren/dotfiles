@@ -49,7 +49,7 @@ message() {
 }
 
 check_variables() {
-    exit 0
+    return 0
 #    if [ -z "${hostname}" ]; then
 #        echo "Hostname can not be empty!"
 #    else
