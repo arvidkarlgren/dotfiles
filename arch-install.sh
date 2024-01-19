@@ -19,12 +19,23 @@ setup() {
 
     format_partitions
     mount_filesystems
-    install_system
+    install_base
     generate_fstab
-    configure_system
+
+    cp $0 /mnt/setup.sh
+    arch-chroot /mnt ./setup.sh chroot
+}
+
+configure() {
+    set_timezone
+    set_locale
+    set_keymap
+    configure_network
     install_grub
     generate_initramfs
     configure_users
+    
+    rm /setup.sh
 }
 
 message() {
@@ -83,7 +94,7 @@ mount_filesystems() {
     swapon "${partition_swap}"
 }
 
-install_system() {
+install_base() {
     message "Installing packages..."
     
     # Base system
@@ -128,59 +139,64 @@ UUID=$(blkid -s UUID -o value ${partition_swap})    none    swap    defaults    
 EOF
 }
 
-configure_system() {
-    # Timezone and clock
-    
-    ## **SORT OF NOT WORKING** ##
+set_timezone() {
 
-    arch-chroot /mnt ln -sf /usr/share/zoneinfo/Europe/Stockholm /etc/localtime
-    arch-chroot /mnt hwclock --systohc
-    
-    # Locale
-    echo "en_US.UTF-8 UTF-8" >> /mnt/etc/locale.gen
-    echo "sv_SE.UTF-8 UTF-8" >> /mnt/etc/locale.gen
+    ln -sf /usr/share/zoneinfo/Europe/Stockholm /etc/localtime
+    hwclock --systohc
+}
 
-    arch-chroot /mnt locale-gen
+set_locale() {
+    echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen
+    echo "sv_SE.UTF-8 UTF-8" >> /etc/locale.gen
+    locale-gen
     
-    echo "LANG=en_US.UTF-8" >> /mnt/etc/locale.conf
-    echo "LC_TIME=sv_SE.UTF-8" >> /mnt/etc/locale.conf
-    
-    # Keymap
-    echo "KEYMAP=sv-latin1" >> /mnt/etc/vconsole.conf
-    
-    # Hostname and host file
-    echo "${hostname}" >> /mnt/etc/hostname
-    cat >> /mnt/etc/hosts <<EOF
+    echo "LANG=en_US.UTF-8" >> /etc/locale.conf
+    echo "LC_TIME=sv_SE.UTF-8" >> /etc/locale.conf
+}
+
+set_keymap(){
+    echo "KEYMAP=sv-latin1" >> /etc/vconsole.conf
+}
+
+configure_network(){
+    echo "${hostname}" >> /etc/hostname
+    cat >> /etc/hosts <<EOF
 ${hostname}
 127.0.0.1 localhost
 ::1 localhost
 127.0.1.1 ${hostname}.localdomain ${hostname}
 EOF
 
-    arch-chroot /mnt systemctl enable NetworkManager sshd
+    systemctl enable NetworkManager sshd
 }
 
 install_grub() {
-    arch-chroot /mnt grub-install --target=x86_64-efi --efi-directory=/efi --bootloader-id=grub
-    arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
+    message "Installing GRUB..."
+
+    grub-install --target=x86_64-efi --efi-directory=/efi --bootloader-id=grub
+    grub-mkconfig -o /boot/grub/grub.cfg
 }
 
 generate_initramfs() {
     message "Generating initramfs..."
 
-    sed -i '/^MODULES=(/c\MODULES=(btrfs)' /mnt/etc/mkinitcpio.conf
-    sed -i '/^HOOKS=(/c\HOOKS=(base udev autodetect modconf kms keyboard keymap consolefont block filesystems fsck grub-btrfs-overlayfs)' /mnt/etc/mkinitcpio.conf
+    sed -i '/^MODULES=(/c\MODULES=(btrfs)' /etc/mkinitcpio.conf
+    sed -i '/^HOOKS=(/c\HOOKS=(base udev autodetect modconf kms keyboard keymap consolefont block filesystems fsck grub-btrfs-overlayfs)' /etc/mkinitcpio.conf
 
-    arch-chroot /mnt mkinitcpio -p linux
+    mkinitcpio -p linux
 }
 
 configure_users() {
     # Set root password
-    arch-chroot /mnt echo -en "${password}\n${password}" | passwd
+    echo -en "${password}\n${password}" | passwd
 
     # Configure user
-    arch-chroot /mnt useradd -m $username
-    arch-chroot /mnt echo -en "${password}\n${password}" | passwd arvid
+    useradd -m $username
+    echo -en "${password}\n${password}" | passwd arvid
 }
 
-setup
+if [ "$1" == "chroot" ]; then
+    configure
+else
+    setup
+fi
