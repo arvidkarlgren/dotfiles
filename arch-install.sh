@@ -10,9 +10,6 @@ hostname='arch-install'
 cpu='amd'
 gpu='nvidia'
 
-# User packages (space separated)
-user_packages='restic '
-
 setup() {
     partition_device
 
@@ -100,9 +97,6 @@ install_system() {
     else
         packages+=" mesa"
     fi
-
-    # User packages
-    packages+=" ${user_packages}"
     
     # Install packages
     pacstrap -K /mnt "${packages}"
