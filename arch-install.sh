@@ -1,19 +1,26 @@
 #!/bin/bash
 
+# Installation device path (eg. /dev/nvme0n1)
 device='/dev/sda'
+
+# Hostname
 hostname='arch-install'
 
+# Present hardware (intel, amd, nvidia)
+cpu='amd'
+gpu='nvidia'
+
 setup() {
-    partition_device
+    #partition_device
 
     partition_esp="$(ls ${device}* | grep 1)"
     partition_swap="$(ls ${device}* | grep 2)"
     partition_root="$(ls ${device}* | grep 3)"
 
-    format_partitions
-    mount_filesystems
+    #format_partitions
+    #mount_filesystems
     install_system
-    generate_fstab
+    #generate_fstab
 }
 
 message() {
@@ -73,8 +80,26 @@ mount_filesystems() {
 
 install_system() {
     message "Installing packages..."
+    
+    # Base system
+    local packages="base linux linux-firmware base-devel btrfs-progs  grub grub-btrfs efibootmgr dosfstools os-prober mtools sudo networkmanager openssh git neovim"
 
-    pacstrap -K /mnt base linux linux-firmware base-devel btrfs-progs git neovim grub grub-btrfs efibootmgr dosfstools os-prober mtools networkmanager openssh sudo
+    if [ "${cpu}" == "intel" ]; then
+        packages+="intel-ucode"
+    elif [ "${cpu}" == "amd" ]; then
+        packages+="amd-ucode"
+    else
+        echo "Warning: No CPU ucode is being installed!"
+    fi
+
+    if ["${gpu}" == "nvidia" ]; then
+        packages+="nvidia nvidia-settings"
+    else
+        packages+="mesa"
+    fi
+
+    echo "${packages}"
+    #pacstrap -K /mnt "${packages}"
 
 }
 
