@@ -17,6 +17,7 @@ setup() {
     input_password
 
 	if check_variables; then
+        echo "Running installer..."
 #	    partition_device
 #	
 #	    partition_esp="$(ls ${device}* | grep 1)"
