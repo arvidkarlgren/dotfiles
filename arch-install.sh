@@ -10,17 +10,20 @@ hostname='arch-install'
 cpu='amd'
 gpu='nvidia'
 
+# User packages (space separated)
+user_packages='restic '
+
 setup() {
-    #partition_device
+    partition_device
 
     partition_esp="$(ls ${device}* | grep 1)"
     partition_swap="$(ls ${device}* | grep 2)"
     partition_root="$(ls ${device}* | grep 3)"
 
-    #format_partitions
-    #mount_filesystems
+    format_partitions
+    mount_filesystems
     install_system
-    #generate_fstab
+    generate_fstab
 }
 
 message() {
@@ -98,8 +101,11 @@ install_system() {
         packages+=" mesa"
     fi
 
-    echo "${packages}"
-    #pacstrap -K /mnt "${packages}"
+    # User packages
+    packages+=" ${user_packages}"
+    
+    # Install packages
+    pacstrap -K /mnt "${packages}"
 
 }
 
