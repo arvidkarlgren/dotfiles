@@ -14,7 +14,8 @@ gpu='nvidia'
 user="arvid"
 
 setup() {
-    input_password
+    echo -n "Password: "
+    read -s password
 
 	if check_variables; then
 #        echo "Running installer..."
@@ -47,11 +48,6 @@ configure() {
     configure_users
     
 #    rm /setup.sh
-}
-
-message() {
-    echo "${1}"
-    echo
 }
 
 check_variables() {
@@ -94,15 +90,7 @@ check_variables() {
     fi
 }
 
-input_password(){
-    echo -n "Password: "
-    read -s password
-    echo
-}
-
 partition_device() {
-    message "Partitioning device..."
-
     parted --script "${device}" \
         mklabel gpt \
         mkpart '"EFI system partition"' fat32 1MiB 501MiB \
@@ -111,8 +99,6 @@ partition_device() {
 }
 
 format_partitions() {
-    message "Formatting partitions..."
-
     echo "Formatting ${partition_esp} as FAT32" 
     dd if=/dev/zero of=${partition_esp} bs=512 count=1024
     mkfs.fat -F32 "${partition_esp}"
@@ -128,8 +114,6 @@ format_partitions() {
 }
 
 mount_filesystems() {
-    message "Mounting filesystems..."
-
     # Temporarily mount BTRFS root and create subvolumes
     mount "${partition_root}" /mnt
     btrfs subvolume create /mnt/@
@@ -152,8 +136,6 @@ mount_filesystems() {
 }
 
 install_base() {
-    message "Installing packages..."
-    
     # Base system
     local packages="base linux linux-firmware base-devel btrfs-progs grub grub-btrfs efibootmgr dosfstools os-prober mtools sudo networkmanager openssh git neovim"
 
@@ -176,8 +158,6 @@ install_base() {
 }
 
 generate_fstab() {
-    message "Generating fstab..."
-
     cat >> /mnt/etc/fstab <<EOF
 # Root
 UUID=$(blkid -s UUID -o value ${partition_root})    /   btrfs   rw,noatime,compress=zstd:1,ssd,discard=async,space_cache=v2,subvol=/@   0   0
@@ -228,15 +208,11 @@ EOF
 }
 
 install_grub() {
-    message "Installing GRUB..."
-
     grub-install --target=x86_64-efi --efi-directory=/efi --bootloader-id=grub
     grub-mkconfig -o /boot/grub/grub.cfg
 }
 
 generate_initramfs() {
-    message "Generating initramfs..."
-
     sed -i '/^MODULES=(/c\MODULES=(btrfs)' /etc/mkinitcpio.conf
     sed -i '/^HOOKS=(/c\HOOKS=(base udev autodetect modconf kms keyboard keymap consolefont block filesystems fsck grub-btrfs-overlayfs)' /etc/mkinitcpio.conf
 
