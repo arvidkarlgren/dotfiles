@@ -13,13 +13,9 @@ gpu='nvidia'
 # User info
 user="arvid"
 
-input_password(){
-    echo -n "Password: "
-    read -s password
-    echo
-}
-
 setup() {
+    input_password
+
     partition_device
 
     partition_esp="$(ls ${device}* | grep 1)"
@@ -49,6 +45,20 @@ configure() {
 
 message() {
     echo "${1}"
+    echo
+}
+
+check_variables() {
+    if [ "${hostname}" -z ]; then
+        echo "no"
+    else
+        echo "yes"
+    fi
+}
+
+input_password(){
+    echo -n "Password: "
+    read -s password
     echo
 }
 
@@ -206,7 +216,7 @@ configure_users() {
     sed -i '/^# %wheel ALL=(ALL:ALL) ALL/c\%wheel ALL=(ALL:ALL) ALL' /etc/sudoers
 }
 
-input_password
+check_variables
 
 #if [ "$1" == "chroot" ]; then
 #    configure
