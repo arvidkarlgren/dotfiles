@@ -85,15 +85,15 @@ install_system() {
     local packages="base linux linux-firmware base-devel btrfs-progs  grub grub-btrfs efibootmgr dosfstools os-prober mtools sudo networkmanager openssh git neovim"
 
     if [ "${cpu}" == "intel" ]; then
-        packages+="intel-ucode"
+        packages+=" intel-ucode"
     elif [ "${cpu}" == "amd" ]; then
-        packages+="amd-ucode"
+        packages+=" amd-ucode"
     else
         echo "Warning: No CPU ucode is being installed!"
     fi
 
     if ["${gpu}" == "nvidia" ]; then
-        packages+="nvidia nvidia-settings"
+        packages+=" nvidia nvidia-settings"
     else
         packages+="mesa"
     fi
