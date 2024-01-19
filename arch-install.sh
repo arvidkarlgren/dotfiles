@@ -217,7 +217,7 @@ configure_users() {
     sed -i '/^# %wheel ALL=(ALL:ALL) ALL/c\%wheel ALL=(ALL:ALL) ALL' /etc/sudoers
 }
 
-if check_variables 0; then
+if check_variables; then
     echo "Okay"
 else
     echo "Not okay"
