@@ -14,7 +14,7 @@ gpu='nvidia'
 user="arvid"
 
 echo "Password:"
-read password
+read -s password
 : "${password:?"Missing hostname"}"
 
 setup() {
