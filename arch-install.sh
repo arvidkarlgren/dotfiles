@@ -61,7 +61,7 @@ check_variables() {
     elif [ -z "${cpu}" ]; then
         echo "CPU can not be empty!"
         return 1
-    elif [ -z "${GPU}" ]; then
+    elif [ -z "${gpu}" ]; then
         echo "GPU can not be empty!"
         return 1
     elif [ -z "${user}" ]; then
