@@ -17,7 +17,7 @@ setup() {
     echo -n "Password: "
     read -s password
 
-	if check_variables; then
+#	if check_variables; then
 #        echo "Running installer..."
 #	    partition_device
 #	
@@ -33,8 +33,8 @@ setup() {
 #	    cp $0 /mnt/setup.sh
 #	    arch-chroot /mnt /setup.sh chroot
 
-        ./arch-install.sh chroot
-    fi
+#        ./arch-install.sh chroot
+#    fi
 }
 
 configure() {
@@ -236,4 +236,5 @@ if [ "$1" == "chroot" ]; then
     configure
 else
     setup
+    echo $password
 fi
