@@ -11,7 +11,7 @@ cpu='amd'
 gpu='nvidia'
 
 # User info
-username=arvid
+user=arvid
 password=1234
 
 setup() {
@@ -195,8 +195,10 @@ configure_users() {
     echo -en "${password}\n${password}" | passwd
 
     # Configure user
-    useradd -m "${username}"
+    useradd -m "${user}"
     echo -en "${password}\n${password}" | passwd arvid
+    usermod -aG wheel "${user}"
+    sed -i '/^# %wheel ALL=(ALL:ALL) ALL/c\%wheel ALL=(ALL:ALL) ALL' /etc/sudoers
 }
 
 if [ "$1" == "chroot" ]; then
