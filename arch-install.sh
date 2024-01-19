@@ -55,19 +55,19 @@ check_variables() {
     if [ -z "${device}" ]; then
         echo "Device can not be empty!"
         return 1
-    elif [-z "${hostname}" ]; then
+    elif [ -z "${hostname}" ]; then
         echo "Hostname can not be empty!"
         return 1
-    elif [-z "${cpu}" ]; then
+    elif [ -z "${cpu}" ]; then
         echo "CPU can not be empty!"
         return 1
-    elif [-z "${GPU}" ]; then
+    elif [ -z "${GPU}" ]; then
         echo "GPU can not be empty!"
         return 1
-    elif [-z "${user}" ]; then
+    elif [ -z "${user}" ]; then
         echo "User can not be empty!"
         return 1
-    elif [-z "${password}" ]; then
+    elif [ -z "${password}" ]; then
         echo "Password can not be empty!"
         return 1
     else
