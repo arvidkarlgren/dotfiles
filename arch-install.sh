@@ -15,8 +15,7 @@ user="arvid"
 password="1234"
 
 setup() {
-	if check_variables; then
-        echo "Running installer..."
+    if check_variables; then
 	    partition_device
 	
 	    partition_esp="$(ls ${device}* | grep 1)"
@@ -36,7 +35,6 @@ setup() {
 }
 
 configure() {
-    echo "Running configure..."
     set_timezone
     set_locale
     set_keymap
