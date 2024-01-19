@@ -14,9 +14,10 @@ gpu='nvidia'
 user="arvid"
 
 input_password(){
-    echo -n "Password:"
+    echo -n "Password: "
     read -s password
     : "${password:?"Missing hostname"}"
+    echo
 }
 
 setup() {
@@ -207,8 +208,6 @@ configure_users() {
 }
 
 input_password
-
-echo $password
 
 #if [ "$1" == "chroot" ]; then
 #    configure
