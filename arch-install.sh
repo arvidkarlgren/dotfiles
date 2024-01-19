@@ -161,7 +161,7 @@ install_grub() {
 }
 
 generate_initramfs() {
-
+    echo
 }
 
 # CHANGE PROXMOX VM TO EFI
