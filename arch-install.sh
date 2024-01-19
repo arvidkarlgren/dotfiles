@@ -13,6 +13,7 @@ gpu='nvidia'
 # User info
 user="arvid"
 
+echo "Password:"
 read password
 : "${password:?"Missing hostname"}"
 
