@@ -21,7 +21,8 @@ setup() {
     mount_filesystems
     install_system
     generate_fstab
-    #configure_grub
+    configure_system
+    install_grub
 }
 
 message() {
@@ -102,9 +103,6 @@ install_system() {
     
     # Install packages
     pacstrap -K /mnt ${packages}
-
-    # Enable services
-    systemctl enable NetworkManager sshd
 }
 
 generate_fstab() {
@@ -128,8 +126,42 @@ UUID=$(blkid -s UUID -o value ${partition_swap})    none    swap    defaults    
 EOF
 }
 
-configure_grub() {
-    grub-install --target=x86_64-efi --efi-directory=/efi
+configure_system() {
+    # Timezone and clock
+    arch-chroot /mnt ls -sf /mnt/usr/share/zoneinfo/Europe/Stockholm /mnt/etc/localtime
+    arch-chroot /mnt hwclock --systohc
+    
+    # Locale
+    echo "en_US.UTF-8 UTF-8" >> /mnt/etc/locale.gen
+    echo "sv_SE.UTF-8 UTF-8" >> /mnt/etc/locale.gen
+    
+    arch-chroot /mnt locale-gen
+    
+    echo "LANG=en_US.UTF-8" >> /mnt/etc/locale.conf
+    echo "LC_TIME=sv_SE.UTF-8" >> /mnt/etc/locale.conf
+    
+    # Keymap
+    echo "KEYMAP=sv-latin1" >> /mnt/etc/vconsole.conf
+    
+    # Hostname and host file
+    echo "${hostname}" >> /mnt/etc/hostname
+    cat >> /mnt/etc/hosts <<EOF
+${hostname}
+127.0.0.1 localhost
+::1 localhost
+127.0.1.1 ${hostname}.localdomain ${hostname}
+EOF
+
+    arch-chroot /mnt systemctl enable NetworkManager sshd
+}
+
+install_grub() {
+    arch-chroot /mnt grub-install --target=x86_64-efi --efi-directory=/efi --bootloader-id=grub
+    arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
+}
+
+generate_initramfs() {
+
 }
 
 # CHANGE PROXMOX VM TO EFI
