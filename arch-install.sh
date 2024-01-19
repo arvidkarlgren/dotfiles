@@ -29,8 +29,6 @@ setup() {
 	
 	    cp $0 /mnt/setup.sh
 	    arch-chroot /mnt /setup.sh chroot
-
-        ./arch-install.sh chroot
     fi
 }
 
