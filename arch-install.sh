@@ -17,7 +17,6 @@ setup() {
     input_password
 
 	if check_variables; then
-        echo "Running installer..."
 #	    partition_device
 #	
 #	    partition_esp="$(ls ${device}* | grep 1)"
@@ -35,15 +34,16 @@ setup() {
 }
 
 configure() {
-    set_timezone
-    set_locale
-    set_keymap
-    configure_network
-    install_grub
-    generate_initramfs
-    configure_users
-    
-    rm /setup.sh
+    echo "Running configure..."
+#    set_timezone
+#    set_locale
+#    set_keymap
+#    configure_network
+#    install_grub
+#    generate_initramfs
+#    configure_users
+#    
+#    rm /setup.sh
 }
 
 message() {
