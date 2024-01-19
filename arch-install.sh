@@ -225,10 +225,8 @@ configure_users() {
     sed -i '/^# %wheel ALL=(ALL:ALL) ALL/c\%wheel ALL=(ALL:ALL) ALL' /etc/sudoers
 }
 
-
 if [ "$1" == "chroot" ]; then
     configure
 else
     setup
-    echo $password
 fi
