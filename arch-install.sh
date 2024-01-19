@@ -132,7 +132,7 @@ configure_system() {
     
     ## **SORT OF NOT WORKING** ##
 
-    arch-chroot /mnt ls -sf /usr/share/zoneinfo/Europe/Stockholm /etc/localtime
+    arch-chroot /mnt ln -sf /usr/share/zoneinfo/Europe/Stockholm /etc/localtime
     arch-chroot /mnt hwclock --systohc
     
     # Locale
@@ -172,9 +172,5 @@ generate_initramfs() {
 
     arch-chroot /mnt mkinitcpio -p linux
 }
-
-# CHANGE PROXMOX VM TO EFI
-# ADD TIMEZONE, HOSTNAME, ETC
-# ADD GRUB INSTALLATION
 
 setup
