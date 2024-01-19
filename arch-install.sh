@@ -16,19 +16,22 @@ user="arvid"
 setup() {
     input_password
 
-    partition_device
-
-    partition_esp="$(ls ${device}* | grep 1)"
-    partition_swap="$(ls ${device}* | grep 2)"
-    partition_root="$(ls ${device}* | grep 3)"
-
-    format_partitions
-    mount_filesystems
-    install_base
-    generate_fstab
-
-    cp $0 /mnt/setup.sh
-    arch-chroot /mnt /setup.sh chroot
+	if check_variables; then
+        echo "Running installer..."
+#	    partition_device
+#	
+#	    partition_esp="$(ls ${device}* | grep 1)"
+#	    partition_swap="$(ls ${device}* | grep 2)"
+#	    partition_root="$(ls ${device}* | grep 3)"
+#	
+#	    format_partitions
+#	    mount_filesystems
+#	    install_base
+#	    generate_fstab
+#	
+#	    cp $0 /mnt/setup.sh
+#	    arch-chroot /mnt /setup.sh chroot
+	fi
 }
 
 configure() {
@@ -49,12 +52,27 @@ message() {
 }
 
 check_variables() {
-    return 0
-#    if [ -z "${hostname}" ]; then
-#        echo "Hostname can not be empty!"
-#    else
-#        echo "yes"
-#    fi
+    if [ -z "${device}" ]; then
+        echo "Device can not be empty!"
+        return 1
+    elif [-z "${hostname}" ]; then
+        echo "Hostname can not be empty!"
+        return 1
+    elif [-z "${cpu}" ]; then
+        echo "CPU can not be empty!"
+        return 1
+    elif [-z "${GPU}" ]; then
+        echo "GPU can not be empty!"
+        return 1
+    elif [-z "${user}" ]; then
+        echo "User can not be empty!"
+        return 1
+    elif [-z "${password}" ]; then
+        echo "Password can not be empty!"
+        return 1
+    else
+        return 0
+    fi
 }
 
 input_password(){
@@ -217,14 +235,9 @@ configure_users() {
     sed -i '/^# %wheel ALL=(ALL:ALL) ALL/c\%wheel ALL=(ALL:ALL) ALL' /etc/sudoers
 }
 
-if check_variables; then
-    echo "Okay"
-else
-    echo "Not okay"
-fi
 
-#if [ "$1" == "chroot" ]; then
-#    configure
-#else
-#    setup
-#fi
+if [ "$1" == "chroot" ]; then
+    configure
+else
+    setup
+fi
