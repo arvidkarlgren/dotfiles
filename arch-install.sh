@@ -71,13 +71,17 @@ check_variables() {
         echo "Password can not be empty!"
         return 1
     else
+        echo
+        echo "-------------------------------------------"
         echo "The following install options will be used:"
         echo "Device: ${device}"
         echo "Hostname: ${hostname}"
         echo "CPU: ${cpu}"
         echo "GPU: ${gpu}"
         echo "User: ${user}"
-        echo "Are these options correct? [Y/N]"
+        echo "-------------------------------------------"
+        echo
+        echo "Are these options correct? [y/N]"
         read response
         if [ "$response" == "Y" ]; then
             return 0
