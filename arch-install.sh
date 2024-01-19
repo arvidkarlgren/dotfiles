@@ -24,6 +24,7 @@ setup() {
     configure_system
     install_grub
     generate_initramfs
+    configure_users
 }
 
 message() {
@@ -171,6 +172,15 @@ generate_initramfs() {
     sed -i '/^HOOKS=(/c\HOOKS=(base udev autodetect modconf kms keyboard keymap consolefont block filesystems fsck grub-btrfs-overlayfs)' /mnt/etc/mkinitcpio.conf
 
     arch-chroot /mnt mkinitcpio -p linux
+}
+
+configure_users() {
+    # Set root password
+    arch-chroot /mnt echo -en "${password}\n${password}" | passwd
+
+    # Configure user
+    arch-chroot /mnt useradd -m $username
+    arch-chroot /mnt echo -en "${password}\n${password}" | passwd arvid
 }
 
 setup
