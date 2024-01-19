@@ -49,7 +49,7 @@ message() {
 }
 
 check_variables() {
-    if [ "${hostname}" -z ]; then
+    if [ -z "${hostname}" ]; then
         echo "no"
     else
         echo "yes"
