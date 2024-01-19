@@ -128,13 +128,16 @@ EOF
 
 configure_system() {
     # Timezone and clock
-    arch-chroot /mnt ls -sf /mnt/usr/share/zoneinfo/Europe/Stockholm /mnt/etc/localtime
+    
+    ## **SORT OF NOT WORKING** ##
+
+    arch-chroot /mnt ls -sf /usr/share/zoneinfo/Europe/Stockholm /etc/localtime
     arch-chroot /mnt hwclock --systohc
     
     # Locale
     echo "en_US.UTF-8 UTF-8" >> /mnt/etc/locale.gen
     echo "sv_SE.UTF-8 UTF-8" >> /mnt/etc/locale.gen
-    
+
     arch-chroot /mnt locale-gen
     
     echo "LANG=en_US.UTF-8" >> /mnt/etc/locale.conf
