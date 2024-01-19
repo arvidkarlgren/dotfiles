@@ -10,6 +10,10 @@ hostname='arch-install'
 cpu='amd'
 gpu='nvidia'
 
+# User info
+username=arvid
+password=1234
+
 setup() {
     partition_device
 
@@ -23,7 +27,7 @@ setup() {
     generate_fstab
 
     cp $0 /mnt/setup.sh
-    arch-chroot /mnt ./setup.sh chroot
+    arch-chroot /mnt /setup.sh chroot
 }
 
 configure() {
@@ -191,7 +195,7 @@ configure_users() {
     echo -en "${password}\n${password}" | passwd
 
     # Configure user
-    useradd -m $username
+    useradd -m "${username}"
     echo -en "${password}\n${password}" | passwd arvid
 }
 
