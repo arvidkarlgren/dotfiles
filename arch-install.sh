@@ -11,16 +11,17 @@ cpu='amd'
 gpu='nvidia'
 
 setup() {
-    #partition_device
+    partition_device
 
     partition_esp="$(ls ${device}* | grep 1)"
     partition_swap="$(ls ${device}* | grep 2)"
     partition_root="$(ls ${device}* | grep 3)"
 
-    #format_partitions
-    #mount_filesystems
-    #install_system
+    format_partitions
+    mount_filesystems
+    install_system
     generate_fstab
+    #configure_grub
 }
 
 message() {
@@ -61,6 +62,7 @@ mount_filesystems() {
     # Temporarily mount BTRFS root and create subvolumes
     mount "${partition_root}" /mnt
     btrfs subvolume create /mnt/@
+
     btrfs subvolume create /mnt/@home
     btrfs subvolume create /mnt/@snapshots
     umount /mnt
@@ -100,6 +102,9 @@ install_system() {
     
     # Install packages
     pacstrap -K /mnt ${packages}
+
+    # Enable services
+    systemctl enable NetworkManager sshd
 }
 
 generate_fstab() {
@@ -121,6 +126,10 @@ UUID=$(blkid -s UUID -o value ${partition_esp}) /efi    vfat    rw,relatime,fmas
 # Swap
 UUID=$(blkid -s UUID -o value ${partition_swap})    none    swap    defaults    0   0
 EOF
+}
+
+configure_grub() {
+    grub-install --target=x86_64-efi --efi-directory=/efi
 }
 
 # CHANGE PROXMOX VM TO EFI
