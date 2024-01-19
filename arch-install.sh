@@ -82,7 +82,7 @@ install_system() {
     message "Installing packages..."
     
     # Base system
-    local packages="base linux linux-firmware base-devel btrfs-progs  grub grub-btrfs efibootmgr dosfstools os-prober mtools sudo networkmanager openssh git neovim"
+    local packages="base linux linux-firmware base-devel btrfs-progs grub grub-btrfs efibootmgr dosfstools os-prober mtools sudo networkmanager openssh git neovim"
 
     if [ "${cpu}" == "intel" ]; then
         packages+=" intel-ucode"
@@ -99,7 +99,7 @@ install_system() {
     fi
     
     # Install packages
-    pacstrap -K /mnt "${packages}"
+    pacstrap -K /mnt ${packages}
 
 }
 
