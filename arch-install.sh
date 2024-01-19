@@ -95,7 +95,7 @@ install_system() {
     if ["${gpu}" == "nvidia" ]; then
         packages+=" nvidia nvidia-settings"
     else
-        packages+="mesa"
+        packages+=" mesa"
     fi
 
     echo "${packages}"
