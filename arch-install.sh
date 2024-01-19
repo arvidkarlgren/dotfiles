@@ -16,7 +16,6 @@ user="arvid"
 input_password(){
     echo -n "Password: "
     read -s password
-    : "${password:?"Missing hostname"}"
     echo
 }
 
