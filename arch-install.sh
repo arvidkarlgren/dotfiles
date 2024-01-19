@@ -13,9 +13,11 @@ gpu='nvidia'
 # User info
 user="arvid"
 
-echo "Password:"
-read -s password
-: "${password:?"Missing hostname"}"
+input_password(){
+    echo -n "Password:"
+    read -s password
+    : "${password:?"Missing hostname"}"
+}
 
 setup() {
     partition_device
@@ -203,6 +205,8 @@ configure_users() {
     usermod -aG wheel "${user}"
     sed -i '/^# %wheel ALL=(ALL:ALL) ALL/c\%wheel ALL=(ALL:ALL) ALL' /etc/sudoers
 }
+
+input_password
 
 echo $password
 
