@@ -49,11 +49,12 @@ message() {
 }
 
 check_variables() {
-    if [ -z "${hostname}" ]; then
-        echo "no"
-    else
-        echo "yes"
-    fi
+    exit 0
+#    if [ -z "${hostname}" ]; then
+#        echo "Hostname can not be empty!"
+#    else
+#        echo "yes"
+#    fi
 }
 
 input_password(){
@@ -216,7 +217,11 @@ configure_users() {
     sed -i '/^# %wheel ALL=(ALL:ALL) ALL/c\%wheel ALL=(ALL:ALL) ALL' /etc/sudoers
 }
 
-check_variables
+if check_variables 0; then
+    echo "Okay"
+else
+    echo "Not okay"
+fi
 
 #if [ "$1" == "chroot" ]; then
 #    configure
