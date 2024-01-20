@@ -1,14 +1,14 @@
 #!/bin/bash
 
 # Installation device path (eg. /dev/nvme0n1)
-device='/dev/sda'
+device='/dev/example'
 
 # Hostname
-hostname='arch-install'
+hostname='arch'
 
 # Present hardware (intel, amd, nvidia)
-cpu='amd'
-gpu='nvidia'
+cpu='intel'
+gpu='intel'
 
 # User info
 user="arvid"
